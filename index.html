@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080d14;
+            --surface: rgba(255,255,255,0.04);
+            --surface-hover: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f4ff;
+            --muted: #6b7a99;
+            --cyan: #38bdf8;
+            --orange: #fb923c;
+            --glow-cyan: rgba(56,189,248,0.15);
+            --glow-orange: rgba(251,146,60,0.12);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            cursor: default;
+        }
+
+        /* ── Ambient background ── */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0;
+            animation: blobIn 1.8s ease forwards;
+        }
+        .blob-1 {
+            width: 500px; height: 500px;
+            background: var(--glow-cyan);
+            top: -150px; left: -100px;
+            animation-delay: 0.2s;
+        }
+        .blob-2 {
+            width: 400px; height: 400px;
+            background: var(--glow-orange);
+            bottom: -120px; right: -80px;
+            animation-delay: 0.5s;
+        }
+        @keyframes blobIn {
+            to { opacity: 1; }
+        }
+
+        /* ── Grain overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ── Main container ── */
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 760px;
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* ── Header ── */
+        .header {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56,189,248,0.08);
+            border: 1px solid rgba(56,189,248,0.2);
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 20px;
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .headline {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 5.5vw, 4.4rem);
+            font-weight: 800;
+            line-height: 1.0;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+        .headline .plain { color: var(--text); }
+        .headline .grad {
+            background: linear-gradient(90deg, var(--cyan) 0%, var(--orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sub {
+            margin-top: 14px;
+            font-size: 1rem;
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        /* ── Clock ── */
+        .clock-wrap {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.25s forwards;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .clock-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .clock {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(5rem, 16vw, 10rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #fff 40%, var(--muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+        .clock-seconds {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            align-self: center;
+        }
+        .date-label {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ── Search ── */
+        .search-wrap {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.38s forwards;
+            width: 100%;
+        }
+        .search-inner {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            color: var(--muted);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        .search-bar {
+            width: 100%;
+            padding: 16px 20px 16px 48px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+            backdrop-filter: blur(10px);
+        }
+        .search-bar::placeholder { color: var(--muted); }
+        .search-bar:focus {
+            border-color: rgba(56,189,248,0.4);
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.08), 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        /* ── Links grid ── */
+        .links-wrap {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) 0.5s forwards;
+            width: 100%;
+        }
+        .links-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .link-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 18px 12px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text);
+            text-align: center;
+            transition: transform 0.2s cubic-bezier(0.22,1,0.36,1),
+                        background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            backdrop-filter: blur(8px);
+        }
+        .link-card:hover {
+            transform: translateY(-4px);
+            background: var(--surface-hover);
+            border-color: rgba(56,189,248,0.25);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(56,189,248,0.1);
+        }
+        .link-icon {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .link-name {
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--muted);
+            transition: color 0.2s;
+        }
+        .link-card:hover .link-name { color: var(--text); }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                Available &amp; Building
+            </div>
+            <h1 class="headline">
+                <span class="plain">Hey, I'm </span><span class="grad">Ayoub</span>
+            </h1>
+            <p class="sub">A developer building web experiences. Here's a collection of everything I've been working on.</p>
+        </div>
+
+        <!-- Clock -->
+        <div class="clock-wrap">
+            <div class="clock-row">
+                <div class="clock" id="clock">00:00</div>
+                <div class="clock-seconds" id="clock-seconds">00</div>
+            </div>
+            <div class="date-label" id="date-label">—</div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap">
+            <form action="https://google.com/search" method="get">
+                <div class="search-inner">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" name="q" class="search-bar" placeholder="Search the web..." autofocus>
+                </div>
+            </form>
+        </div>
+
+        <!-- Quick links -->
+        <div class="links-wrap">
+            <p class="links-label">Quick Access</p>
+            <div class="links-grid">
+                <a href="https://github.com" class="link-card">
+                    <span class="link-icon">💻</span>
+                    <span class="link-name">GitHub</span>
+                </a>
+                <a href="https://youtube.com" class="link-card">
+                    <span class="link-icon">📺</span>
+                    <span class="link-name">YouTube</span>
+                </a>
+                <a href="https://reddit.com" class="link-card">
+                    <span class="link-icon">🤖</span>
+                    <span class="link-name">Reddit</span>
+                </a>
+                <a href="https://gmail.com" class="link-card">
+                    <span class="link-icon">✉️</span>
+                    <span class="link-name">Gmail</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        function update() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2,'0');
+            const m = String(now.getMinutes()).padStart(2,'0');
+            const s = String(now.getSeconds()).padStart(2,'0');
+            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('clock-seconds').textContent = s;
+            document.getElementById('date-label').textContent =
+                `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+        }
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
